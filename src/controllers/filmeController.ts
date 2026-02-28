@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import prisma from "../prisma";
+import { prisma } from "../prisma/client"
 
 export async function listarFilmes(req: Request, res: Response): Promise<void> {
   try {

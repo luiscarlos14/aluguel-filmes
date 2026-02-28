@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import prisma from "../prisma";
+import { prisma } from "../prisma/client"
 import { AuthRequest } from "../middlewares/auth";
 
 export async function alugarFilme(req: AuthRequest, res: Response): Promise<void> {
