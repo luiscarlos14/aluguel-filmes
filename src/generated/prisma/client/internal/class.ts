@@ -20,7 +20,7 @@ const config: runtime.GetPrismaClientConfig = {
   "clientVersion": "7.4.2",
   "engineVersion": "94a226be1cf2967af2541cca5529f0f7ba866919",
   "activeProvider": "postgresql",
-  "inlineSchema": "generator client {\n  provider = \"prisma-client\"\n  output   = \"../generated/prisma\"\n}\n\ndatasource db {\n  provider = \"postgresql\"\n}\n\nmodel User {\n  id        String    @id @default(uuid())\n  nome      String\n  email     String    @unique\n  senha     String\n  createdAt DateTime  @default(now())\n  updatedAt DateTime  @updatedAt\n  alugados  Alugado[]\n\n  @@map(\"users\")\n}\n\nmodel Filme {\n  id            String    @id @default(uuid())\n  titulo        String\n  descricao     String?\n  genero        String\n  anoLancamento Int\n  duracao       Int // em minutos\n  precoDiaria   Decimal   @db.Decimal(10, 2)\n  disponivel    Boolean   @default(true)\n  createdAt     DateTime  @default(now())\n  updatedAt     DateTime  @updatedAt\n  alugados      Alugado[]\n\n  @@map(\"filmes\")\n}\n\nmodel Alugado {\n  id            String    @id @default(uuid())\n  userId        String\n  filmeId       String\n  dataAluguel   DateTime  @default(now())\n  dataDevolucao DateTime?\n  valorTotal    Decimal?  @db.Decimal(10, 2)\n  status        Status    @default(ATIVO)\n  createdAt     DateTime  @default(now())\n  updatedAt     DateTime  @updatedAt\n\n  user  User  @relation(fields: [userId], references: [id], onDelete: Cascade)\n  filme Filme @relation(fields: [filmeId], references: [id], onDelete: Cascade)\n\n  @@map(\"alugados\")\n}\n\nenum Status {\n  ATIVO\n  DEVOLVIDO\n  ATRASADO\n}\n",
+  "inlineSchema": "generator client {\n  provider = \"prisma-client\"\n  output   = \"../src/generated/prisma/client\"\n}\n\ndatasource db {\n  provider = \"postgresql\"\n}\n\nmodel User {\n  id        String    @id @default(uuid())\n  nome      String\n  email     String    @unique\n  senha     String\n  createdAt DateTime  @default(now())\n  updatedAt DateTime  @updatedAt\n  alugados  Alugado[]\n\n  @@map(\"users\")\n}\n\nmodel Filme {\n  id            String    @id @default(uuid())\n  titulo        String\n  descricao     String?\n  genero        String\n  anoLancamento Int\n  duracao       Int // em minutos\n  precoDiaria   Decimal   @db.Decimal(10, 2)\n  disponivel    Boolean   @default(true)\n  createdAt     DateTime  @default(now())\n  updatedAt     DateTime  @updatedAt\n  alugados      Alugado[]\n\n  @@map(\"filmes\")\n}\n\nmodel Alugado {\n  id            String    @id @default(uuid())\n  userId        String\n  filmeId       String\n  dataAluguel   DateTime  @default(now())\n  dataDevolucao DateTime?\n  valorTotal    Decimal?  @db.Decimal(10, 2)\n  status        Status    @default(ATIVO)\n  createdAt     DateTime  @default(now())\n  updatedAt     DateTime  @updatedAt\n\n  user  User  @relation(fields: [userId], references: [id], onDelete: Cascade)\n  filme Filme @relation(fields: [filmeId], references: [id], onDelete: Cascade)\n\n  @@map(\"alugados\")\n}\n\nenum Status {\n  ATIVO\n  DEVOLVIDO\n  ATRASADO\n}\n",
   "runtimeDataModel": {
     "models": {},
     "enums": {},
@@ -45,10 +45,10 @@ async function decodeBase64AsWasm(wasmBase64: string): Promise<WebAssembly.Modul
 }
 
 config.compilerWasm = {
-  getRuntime: async () => await import("@prisma/client/runtime/query_compiler_fast_bg.postgresql.mjs"),
+  getRuntime: async () => await import("@prisma/client/runtime/query_compiler_fast_bg.postgresql.js"),
 
   getQueryCompilerWasmModule: async () => {
-    const { wasm } = await import("@prisma/client/runtime/query_compiler_fast_bg.postgresql.wasm-base64.mjs")
+    const { wasm } = await import("@prisma/client/runtime/query_compiler_fast_bg.postgresql.wasm-base64.js")
     return await decodeBase64AsWasm(wasm)
   },
 
